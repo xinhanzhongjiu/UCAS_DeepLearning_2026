@@ -1,6 +1,6 @@
 # Exp5：YOLOv5 在 PASCAL VOC 上的微调训练与评估
 
-本文档汇总本实验的**执行环境、全部命令、权重路径与结果目录**，便于自行复现。
+本文档汇总本实验的**执行环境、全部命令、权重路径与结果目录。实验代码仓库：https://github.com/xinhanzhongjiu/UCAS_DeepLearning_2026
 
 ---
 
@@ -8,16 +8,16 @@
 
 | 项目 | 值 |
 |------|-----|
-| 工作目录 | `/root/code/DL/UCAS_DeepLearning_2026/exp5/yolov5` |
-| Python 环境 | **Conda `yolo`**（`/root/miniconda3/envs/yolo`） |
-| GPU | NVIDIA A800（`--device 0` 训练，`--device 1` 可并行验证） |
+| 工作目录 | `UCAS_DeepLearning_2026/exp5/yolov5` |
+| Python 环境 | **Conda `yolo`**（python=3.12 torch=2.6.0+cu124） |
+| GPU | NVIDIA A800 |
 | 预训练权重 | `yolov5/weights/yolov5s.pt`（COCO 预训练） |
 
 激活环境：
 
 ```bash
 conda activate yolo
-cd /root/code/DL/UCAS_DeepLearning_2026/exp5/yolov5
+cd UCAS_DeepLearning_2026/exp5/yolov5
 ```
 
 安装依赖：
@@ -40,7 +40,7 @@ cp /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf ~/.config/Ultralytics/Arial.t
 **数据集根目录：**
 
 ```
-/root/code/DL/UCAS_DeepLearning_2026/exp5/datasets/VOC/
+UCAS_DeepLearning_2026/exp5/datasets/VOC/
 ├── images/{train2012, val2012, train2007, val2007, test2007}/
 └── labels/   （与 images 镜像对应）
 ```
@@ -56,7 +56,7 @@ cp /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf ~/.config/Ultralytics/Arial.t
 python -c "from utils.general import check_dataset; check_dataset('data/VOC.yaml')"
 ```
 
-**方式 B：pjreddie 镜像下载 + 转换（本实验实际使用）**
+**方式 B：pjreddie 镜像下载 + 转换**
 
 ```bash
 # 下载 tar 包到 datasets/VOC/images/

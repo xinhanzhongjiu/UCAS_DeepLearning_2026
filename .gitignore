@@ -5,7 +5,7 @@ __pycache__/
 checkpoints/
 data/
 !exp5/yolov5/data/
-results/
 
 runs/
 exp5/yolov5_backup/
+.DS_Store

@@ -1,13 +1,12 @@
 # exp8：CNN-Transformer 图像描述（MSCOCO）
 
-基于 **ResNet50 + Transformer Encoder-Decoder** 的图像描述生成；在同一数据划分上提供 **CNN+LSTM** 弱基线对比。默认在 conda 环境 **`yolo`** 中运行。
+基于 **ResNet50 + Transformer Encoder-Decoder** 的图像描述生成；在同一数据划分上提供 **CNN+LSTM** 弱基线对比。默认在 conda 环境（python=3.12 torch=2.6.0+cu124）中运行。
 
 ---
 
 ## 环境准备
 
 ```bash
-conda activate yolo
 cd /root/code/DL/UCAS_DeepLearning_2026/exp8
 pip install -r requirements.txt
 ```
@@ -80,7 +79,6 @@ exp8/
 ### 1. 下载数据
 
 ```bash
-conda activate yolo
 cd /root/code/DL/UCAS_DeepLearning_2026/exp8
 
 # 仅标注（已下载可跳过）
@@ -280,7 +278,7 @@ python test.py all --max-images 500 --epochs 2
 
 ---
 
-## 作业检查清单（建议顺序）
+## 实验检查清单
 
 1. `pip install -r requirements.txt`
 2. `python download_data.py --quick` 或完整下载 + 设置 `COCO_ROOT`

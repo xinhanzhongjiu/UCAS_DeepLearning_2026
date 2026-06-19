@@ -1,5 +1,9 @@
 # 实验五：基于 YOLOv5 的 PASCAL VOC 目标检测微调与评估
 
+小组成员：朱立景、徐康晴、吕正大
+
+实验代码仓库：https://github.com/xinhanzhongjiu/UCAS_DeepLearning_2026
+
 ---
 
 ## 一、概述
@@ -26,7 +30,7 @@
 ### 1.4 实验环境
 
 - **框架**：PyTorch 2.6 + Ultralytics YOLOv5 v7.0
-- **环境**：Conda `yolo`，NVIDIA A800 GPU
+- **环境**：Conda `yolo` （python=3.12 torch=2.6.0+cu124），NVIDIA A800 GPU
 - **代码目录**：`exp5/yolov5/`
 
 ---
@@ -223,15 +227,15 @@ exp5/datasets/VOC/
 
 #### Baseline 训练曲线
 
-![Baseline 训练曲线](yolov5/runs/train/voc_baseline/results.png)
+<img src="https://raw.githubusercontent.com/xinhanzhongjiu/Picture/master/test/202606192119388.png" alt="Baseline 训练曲线" style="zoom: 33%;" />
 
 #### Finetuned 训练曲线
 
-![Finetuned 训练曲线](yolov5/runs/train/voc_finetuned/results.png)
+<img src="https://raw.githubusercontent.com/xinhanzhongjiu/Picture/master/test/202606192119394.png" alt="Finetuned 训练曲线" style="zoom:33%;" />
 
 #### 两组实验对比
 
-![Baseline vs Finetuned 对比](yolov5/runs/analysis/comparison.png)
+<img src="https://raw.githubusercontent.com/xinhanzhongjiu/Picture/master/test/202606192120233.png" alt="Baseline vs Finetuned 对比" style="zoom:33%;" />
 
 从对比图可以观察到：
 
@@ -263,13 +267,13 @@ exp5/datasets/VOC/
 
 **PR 曲线与 F1 曲线：**
 
-![PR 曲线](yolov5/runs/train/voc_finetuned/PR_curve.png)
+<img src="https://raw.githubusercontent.com/xinhanzhongjiu/Picture/master/test/202606192120251.png" alt="PR 曲线" style="zoom:33%;" />
 
-![F1 曲线](yolov5/runs/train/voc_finetuned/F1_curve.png)
+<img src="https://raw.githubusercontent.com/xinhanzhongjiu/Picture/master/test/202606192120667.png" alt="F1 曲线" style="zoom:33%;" />
 
 ### 3.6 混淆矩阵与误检分析
 
-![混淆矩阵](yolov5/runs/train/voc_finetuned/confusion_matrix.png)
+<img src="https://raw.githubusercontent.com/xinhanzhongjiu/Picture/master/test/202606192121991.png" alt="混淆矩阵" style="zoom:33%;" />
 
 **缺陷分析：**
 
@@ -291,11 +295,11 @@ exp5/datasets/VOC/
 
 | Ground Truth | Prediction |
 |:---:|:---:|
-| ![GT](yolov5/runs/val/voc_finetuned/val_batch0_labels.jpg) | ![Pred](yolov5/runs/val/voc_finetuned/val_batch0_pred.jpg) |
+| ![GT](https://raw.githubusercontent.com/xinhanzhongjiu/Picture/master/test/202606192121126.jpg) | ![Pred](https://raw.githubusercontent.com/xinhanzhongjiu/Picture/master/test/202606192121766.jpg) |
 
 **测试集单张检测示例（`test2007/000001.jpg`）：**
 
-![检测示例](yolov5/runs/detect/voc_detect/000001.jpg)
+![000001](https://raw.githubusercontent.com/xinhanzhongjiu/Picture/master/test/202606192121490.jpg)
 
 全量 4,952 张测试集检测结果保存在 `yolov5/runs/detect/voc_detect/`。
 
