@@ -1,0 +1,42 @@
+# Paths
+coco_root: data/coco
+checkpoint_dir: checkpoints
+results_dir: results
+
+# Data
+max_images: 10000  # 0 = full dataset
+split_seed: 42
+train_ratio: 0.8
+val_ratio: 0.1
+test_ratio: 0.1
+tokenizer_name: bert-base-uncased  # falls back to local vocab if HF unreachable
+
+# Image
+image_size: 224
+
+# Model
+d_model: 512
+nhead: 8
+num_encoder_layers: 3
+num_decoder_layers: 3
+dim_feedforward: 2048
+dropout: 0.1
+freeze_until: layer3  # none | layer2 | layer3
+
+# Training
+batch_size: 32
+epochs: 30
+lr: 1.0e-4
+weight_decay: 1.0e-4
+grad_clip: 1.0
+label_smoothing: 0.0
+max_caption_len: 40
+num_workers: 4
+seed: 42
+use_amp: true
+save_every_epochs: 5
+
+# Inference
+beam_size: 3
+decode_max_len: 40
+meteor_chunk_size: 256  # METEOR 分批评测，避免 meteor.jar 协议错位

@@ -1,0 +1,13 @@
+lr0: 0.0032 #学习率
+lrf: 0.12 #余弦退火超参数 (Cosine Annealing）
+momentum: 0.843 #学习率动量 
+weight_decay: 0.00036 #权重衰减系数 
+warmup_epochs: 2.0 #预热学习 epoch 
+warmup_momentum: 0.5 #预热学习率动量 
+warmup_bias_lr: 0.05 #预热学习率 
+box: 0.0296 #giou 损失的系数 
+cls: 0.243 #分类损失的系数 
+cls_pw: 0.631 #分类 BCELoss 中正样本的权重 
+obj: 0.301 #有无物体损失的系数 
+obj_pw: 0.911 #有无物体 BCELoss 中正样本的权重 
+iou_t: 0.2 #标签与 anchors 的 iou 阈值（iou-training-threshold）

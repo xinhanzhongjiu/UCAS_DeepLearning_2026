@@ -1,0 +1,142 @@
+[
+  {
+    "gt": "A beach with dining tables and huge straw umbrellas.",
+    "pred": "a group of tables with umbrellas and a pile of rocks",
+    "length_cat": "medium",
+    "content_cat": "scene",
+    "image_id": 74430
+  },
+  {
+    "gt": "A beached boat the designation RX58 is shown on a cloudy day.",
+    "pred": "a boat sitting on the beach near the ocean",
+    "length_cat": "medium",
+    "content_cat": "scene",
+    "image_id": 453488
+  },
+  {
+    "gt": "Two women standing in front of a laptop computer.",
+    "pred": "a man is looking at a laptop computer through a desk",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 183332
+  },
+  {
+    "gt": "A donut that has powdered sugar and chocolate filling.",
+    "pred": "a hand holding a doughnut in a persons hand",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 202865
+  },
+  {
+    "gt": "A man with a butcher knife standing in front of sheep.",
+    "pred": "a woman is standing next to a goat",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 76970
+  },
+  {
+    "gt": "A group of people who are looking at a building.",
+    "pred": "a group of people stand in front of a building",
+    "length_cat": "medium",
+    "content_cat": "scene",
+    "image_id": 287877
+  },
+  {
+    "gt": "a child in a bed with a striped sweater and colorful blanket",
+    "pred": "a little girl laying on a bed with a baby blanket",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 114458
+  },
+  {
+    "gt": "A desk topped with multiple laptop computers and desktop monitors.",
+    "pred": "a desk with three laptops and a desktop computer on it through a window window",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 40304
+  },
+  {
+    "gt": "a close up of a person wearing a shirt and tie",
+    "pred": "a man with glasses and a tie on",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 29541
+  },
+  {
+    "gt": "A baseball player is throwing a baseball outside.",
+    "pred": "a baseball player throwing a baseball from the mound",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 403826
+  },
+  {
+    "gt": "a grey king-cab truck is parked in a driveway",
+    "pred": "a truck parked in a driveway with a house in the back",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 364266
+  },
+  {
+    "gt": "Two toilet bowls sitting side by side in a hallway.",
+    "pred": "a bathroom with a toilet and a sink door in it",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 544875
+  },
+  {
+    "gt": "A batter is taking swing at an incoming pitch in a baseball game",
+    "pred": "a baseball player swinging a bat at a ball",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 148639
+  },
+  {
+    "gt": "A smiling lady holding up a cell phone showing the screen.",
+    "pred": "a man is holding a cell phone up to his ear",
+    "length_cat": "medium",
+    "content_cat": "action",
+    "image_id": 136570
+  },
+  {
+    "gt": "A man swinging a tennis racquet at a ball on a court.",
+    "pred": "a tennis player is hitting the ball with his racket",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 432527
+  },
+  {
+    "gt": "there are two slices of different pizzas on a paper plate",
+    "pred": "a pizza sitting on top of a white paper plate",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 125242
+  },
+  {
+    "gt": "A TV stand with a TV on top of it next to a desktop computer.",
+    "pred": "a room with a television and a desk monitor on it",
+    "length_cat": "long",
+    "content_cat": "object",
+    "image_id": 284639
+  },
+  {
+    "gt": "Group of women on a soccer field with the ball in the air. ",
+    "pred": "a group of people playing baseball on a field field",
+    "length_cat": "medium",
+    "content_cat": "scene",
+    "image_id": 480947
+  },
+  {
+    "gt": "A man walks in the water with a surfboard near a small waterfall.",
+    "pred": "a person riding a surf board in a body of water",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 206017
+  },
+  {
+    "gt": "A man in white clothing either bloody or wearing red paint.",
+    "pred": "a man in a red shirt and white shorts playing tennis",
+    "length_cat": "medium",
+    "content_cat": "object",
+    "image_id": 377868
+  }
+]
