@@ -9,3 +9,5 @@ data/
 runs/
 exp5/yolov5_backup/
 .DS_Store
+
+*.pyc
