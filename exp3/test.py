@@ -1,3 +1,9 @@
+"""
+测试唐诗自动续写模型的性能
+
+运行示例: python test.py
+"""
+
 from tang import PoetryModel, generate_poetry, get_device
 import torch
 

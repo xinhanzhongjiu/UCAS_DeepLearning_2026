@@ -1,5 +1,7 @@
 # 实验二：基于 Vision Transformer 的 CIFAR-10 图像分类
 
+朱立景 2025E8013282177
+
 ## 一、概述
 
 本实验旨在使用 **Vision Transformer（ViT）** 完成 CIFAR-10 数据集的 10 类图像分类任务，并在测试集上达到 **90% 以上** 的分类准确率。
@@ -10,7 +12,7 @@
 
 **解决方案：** 针对 CIFAR-10 的小分辨率特点，设计轻量级 ViT 网络（Patch Size = 4，Embed Dim = 192，Depth = 9），配合 RandAugment、Mixup/CutMix、Label Smoothing 等训练技巧，采用 AdamW 优化器与 Cosine 学习率调度，在 GPU 上训练 200 个 epoch。
 
-**实验环境：** Conda 环境 `ocr`，PyTorch + CUDA，单卡 GPU 训练。
+**实验环境：** Conda，Python 3.10，PyTorch 2.5.1 + CUDA，NVIDIA A800 GPU。
 
 **实验结果：** 最佳测试准确率 **91.11%**（第 183 epoch），达到预设目标（≥ 90%）。
 
@@ -129,6 +131,7 @@ def lr_lambda(epoch):
 ```
 
 **其他训练细节：**
+
 - Batch Size = 128
 - 梯度裁剪：`max_norm = 1.0`
 - 随机种子：42
@@ -223,7 +226,3 @@ CIFAR-10 是计算机视觉领域最经典的基准数据集之一，由 Hinton 
 本实验成功实现了基于 Vision Transformer 的 CIFAR-10 图像分类系统。通过将 patch size 缩小至 4×4、控制模型规模（约 400 万参数），并配合 RandAugment、Mixup/CutMix、Label Smoothing 及 AdamW + Cosine 调度等训练策略，在 200 个 epoch 后于测试集取得 **91.11%** 的最佳准确率，超过 90% 的实验目标。
 
 实验表明：ViT 虽为 Transformer 架构，在缺乏大规模预训练的情况下，只要针对小分辨率图像合理设计 patch 粒度，并辅以充分的数据增强与正则化，同样可以在 CIFAR-10 上取得与优秀 CNN 相当甚至更优的性能。后续可进一步探索的知识蒸馏（DeiT 思路）、更长的训练周期或 AutoAugment 策略，有望将准确率推向 92% 以上。
-
-**代码与模型：**
-- 训练脚本：`exp2/vit.py`
-- 最佳模型：`exp2/checkpoints/cifar10_vit.pt`

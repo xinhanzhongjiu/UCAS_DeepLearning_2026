@@ -1,8 +1,7 @@
 """
 唐诗自动续写 — Embedding + LSTM + 因果自注意力 + 全连接层
 
-运行环境: conda activate ocr
-示例: python tang.py
+运行示例: python tang.py
 """
 
 from __future__ import annotations

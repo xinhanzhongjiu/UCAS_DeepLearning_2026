@@ -1,8 +1,7 @@
 """
 CIFAR-10 图像分类 — Vision Transformer (ViT)
 
-运行环境: conda activate ocr
-示例:
+运行示例:
   cd exp2 && python vit.py
   python vit.py --epochs 200   # 默认配置约可达 90%+ 测试准确率
   python vit.py --official-download   # 强制使用多伦多大学官方源

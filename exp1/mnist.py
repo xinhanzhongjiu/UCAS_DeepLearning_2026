@@ -1,8 +1,7 @@
 """
 MNIST 手写数字分类 — 卷积神经网络
 
-运行环境: conda activate ocr
-示例: python mnist.py
+运行示例: python mnist.py
 """
 
 from __future__ import annotations
