@@ -1,0 +1,73 @@
+{
+  "split": "test",
+  "checkpoint": "/root/code/DL/UCAS_DeepLearning_2026/exp8/checkpoints/baseline_best.pt",
+  "model_type": "lstm",
+  "num_samples": 11830,
+  "metrics": {
+    "Bleu_1": 0.5494975874421263,
+    "Bleu_2": 0.38822382327144966,
+    "Bleu_3": 0.26446489625877817,
+    "Bleu_4": 0.1795682161578781,
+    "ROUGE_L": 0.41068374441621625,
+    "CIDEr": 0.5611252884175129,
+    "METEOR": 0.2429583391367424,
+    "METEOR_backend": "pycocoevalcap"
+  },
+  "examples": [
+    {
+      "image_id": 362005,
+      "prediction": "a man on a skateboard at a skate park to his face to look at the camera",
+      "references": [
+        "A man flying into the air on top of a skateboard ramp.",
+        "A young man doing a skateboard trick while others watch.",
+        "very many young people skating and others watching",
+        "A skateboarder concentrates in midair as others watch.",
+        "A boy riding on his skateboard at a skate patk whike other guys watch."
+      ]
+    },
+    {
+      "image_id": 77709,
+      "prediction": "a man standing next to a truck with a bunch of luggage to it to his face them",
+      "references": [
+        "A couple of men and a dog looking onward by an antique bus cart.",
+        "Vintage tour guides stand next to an early bus.",
+        "Two man stand in front of a classic bus",
+        "A black and white photo of two men an old fashioned bus and a bull dog.",
+        "A black and white photo of two men near a car"
+      ]
+    },
+    {
+      "image_id": 145621,
+      "prediction": "a man holding a blue and white toothbrush",
+      "references": [
+        "A smiling man studies his cell phone in a crowded setting.",
+        "A smiling man wearing a blue shirt checking his cell phone.",
+        "A man is looking happily at his cell phone.",
+        "A man smiles as he looks at his cell phone.",
+        "A man is looking at his phone while smiling."
+      ]
+    },
+    {
+      "image_id": 397986,
+      "prediction": "a large air plane on a run way",
+      "references": [
+        "a red and blue stripe on a large airplane",
+        "A plane is refueling on the airport tarmac.",
+        "A British Airways plane sits on a tarmac on a rainy day.",
+        "an airplane with some trucks parked around it",
+        "A large British Airway jet sitting on top of a wet tarmac."
+      ]
+    },
+    {
+      "image_id": 73209,
+      "prediction": "a man pouring a glass of wine in a kitchen to her to her face to her face",
+      "references": [
+        "Two men are checking out several wines in a crowded room.",
+        "A group of people by a counter with some bottles.",
+        "A group of people are standing near a wine rack.",
+        "A group of people are at a wine tasting.",
+        "People talking and drinking in a party."
+      ]
+    }
+  ]
+}
