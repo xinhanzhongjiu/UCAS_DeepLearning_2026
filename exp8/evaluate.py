@@ -48,7 +48,91 @@ def _to_string_captions(gts: Dict, res: Dict) -> Tuple[Dict, Dict]:
     return gts_out, res_out
 
 
-def coco_eval_metrics(gts: Dict, res: Dict) -> Dict[str, float]:
+def _sanitize_caption(text: str) -> str:
+    """METEOR stdio protocol breaks on '|||' and newlines."""
+    return text.replace("|||", " ").replace("\n", " ").replace("\r", " ").strip()
+
+
+def _prepare_meteor_inputs(gts: Dict, res: Dict) -> Tuple[Dict, Dict]:
+    gts_out = {
+        k: [_sanitize_caption(c["caption"] if isinstance(c, dict) else c) for c in v]
+        for k, v in gts.items()
+    }
+    res_out = {
+        k: [_sanitize_caption(c["caption"] if isinstance(c, dict) else c) for c in v]
+        for k, v in res.items()
+    }
+    return gts_out, res_out
+
+
+def _close_meteor(meteor) -> None:
+    proc = getattr(meteor, "meteor_p", None)
+    if proc is None:
+        return
+    try:
+        if proc.stdin:
+            proc.stdin.close()
+        proc.kill()
+        proc.wait(timeout=5)
+    except Exception:
+        pass
+
+
+def compute_meteor_pycocoevalcap(gts: Dict, res: Dict, chunk_size: int = 256) -> Tuple[float, List[float]]:
+    """Chunked METEOR via pycocoevalcap (COCO-official meteor-1.5.jar)."""
+    from pycocoevalcap.meteor.meteor import Meteor
+
+    gts, res = _prepare_meteor_inputs(gts, res)
+    img_ids = sorted(gts.keys())
+    all_scores: List[float] = []
+
+    for start in range(0, len(img_ids), chunk_size):
+        chunk_ids = img_ids[start : start + chunk_size]
+        gts_chunk = {i: gts[i] for i in chunk_ids}
+        res_chunk = {i: res[i] for i in chunk_ids}
+        meteor = Meteor()
+        try:
+            _, scores = meteor.compute_score(gts_chunk, res_chunk)
+            all_scores.extend(float(s) for s in scores)
+        finally:
+            _close_meteor(meteor)
+
+    corpus = sum(all_scores) / max(1, len(all_scores))
+    return corpus, all_scores
+
+
+def compute_meteor_nltk(gts: Dict, res: Dict) -> Tuple[float, List[float]]:
+    """NLTK METEOR fallback (no meteor.jar stdio protocol)."""
+    from nltk.tokenize import word_tokenize
+    from nltk.translate.meteor_score import meteor_score
+
+    gts, res = _prepare_meteor_inputs(gts, res)
+    scores: List[float] = []
+    for img_id in sorted(gts.keys()):
+        refs_tok = [word_tokenize(r.lower()) for r in gts[img_id]]
+        hyp_tok = word_tokenize(res[img_id][0].lower())
+        try:
+            scores.append(float(meteor_score(refs_tok, hyp_tok)))
+        except Exception:
+            scores.append(0.0)
+    corpus = sum(scores) / max(1, len(scores))
+    return corpus, scores
+
+
+def compute_meteor(gts: Dict, res: Dict, chunk_size: int = 256) -> Tuple[float, str]:
+    """Return (score, backend_name). Tries pycocoevalcap first, then NLTK."""
+    try:
+        score, _ = compute_meteor_pycocoevalcap(gts, res, chunk_size=chunk_size)
+        return score, "pycocoevalcap"
+    except Exception as primary_err:
+        try:
+            score, _ = compute_meteor_nltk(gts, res)
+            return score, f"nltk (fallback: {primary_err})"
+        except Exception as fallback_err:
+            raise RuntimeError(f"pycocoevalcap: {primary_err}; nltk: {fallback_err}") from fallback_err
+
+
+def coco_eval_metrics(gts: Dict, res: Dict, meteor_chunk_size: int = 256) -> Dict[str, float]:
     from pycocoevalcap.bleu.bleu import Bleu
     from pycocoevalcap.cider.cider import Cider
     from pycocoevalcap.rouge.rouge import Rouge
@@ -70,11 +154,9 @@ def coco_eval_metrics(gts: Dict, res: Dict) -> Dict[str, float]:
             metrics[method] = float(score)
 
     try:
-        from pycocoevalcap.meteor.meteor import Meteor
-
-        meteor = Meteor()
-        score, _ = meteor.compute_score(gts, res)
+        score, backend = compute_meteor(gts, res, chunk_size=meteor_chunk_size)
         metrics["METEOR"] = float(score)
+        metrics["METEOR_backend"] = backend
     except Exception as e:
         metrics["METEOR"] = None
         metrics["METEOR_error"] = str(e)
@@ -128,7 +210,7 @@ def run_eval(cfg: Dict, split: str, checkpoint: Path, baseline: bool = False) ->
             hyps.append(pred)
             refs_list.append(ref_caps)
 
-    metrics = coco_eval_metrics(gts, res)
+    metrics = coco_eval_metrics(gts, res, meteor_chunk_size=cfg.get("meteor_chunk_size", 256))
     if "ROUGE_L" not in metrics or metrics.get("ROUGE_L", 0) == 0:
         metrics["ROUGE_L_alt"] = rouge_l_extra(hyps, refs_list)
 
@@ -182,7 +264,7 @@ def main() -> None:
         "|--------|-------|",
     ]
     for k, v in results["metrics"].items():
-        if k.endswith("_error"):
+        if k.endswith("_error") or k.endswith("_backend"):
             continue
         if v is None:
             lines.append(f"| {k} | N/A |")

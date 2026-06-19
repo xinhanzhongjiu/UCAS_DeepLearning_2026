@@ -10,7 +10,7 @@ from typing import Dict, List, Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from matplotlib import cm
+import torch.nn.functional as F
 from PIL import Image
 from pycocotools.coco import COCO
 
@@ -41,6 +41,29 @@ def categorize_caption(text: str) -> str:
     return "object"
 
 
+def attention_to_heatmap(attn: torch.Tensor, grid_size: int = 7, out_size: int = 224) -> np.ndarray:
+    """attn: (B, tgt_len, src_len) or (tgt_len, src_len) -> upsampled heatmap (out_size, out_size)."""
+    if attn.dim() == 3:
+        w = attn[0, -1]
+    elif attn.dim() == 2:
+        w = attn[-1]
+    else:
+        w = attn.flatten()
+
+    w = w.detach().float().cpu()
+    n = grid_size * grid_size
+    if w.numel() < n:
+        pad = torch.zeros(n - w.numel())
+        w = torch.cat([w, pad])
+    w = w[:n].reshape(grid_size, grid_size)
+    w = w - w.min()
+    w = w / (w.max() + 1e-8)
+
+    heat = w.unsqueeze(0).unsqueeze(0)  # (1, 1, 7, 7)
+    heat = F.interpolate(heat, size=(out_size, out_size), mode="bilinear", align_corners=False)
+    return heat.squeeze().numpy()
+
+
 def caption_length_cat(text: str) -> str:
     n = len(text.split())
     if n < 8:
@@ -63,12 +86,14 @@ def visualize_sample(
     cls_id = tokenizer.cls_token_id
     sep_id = tokenizer.sep_token_id
     max_len = cfg.get("decode_max_len", 40)
+    img_size = cfg.get("image_size", 224)
 
     img_batch = image_tensor.unsqueeze(0).to(device)
     pred_ids, attn = model.greedy_decode(
         img_batch, cls_id, sep_id, max_len, return_attention=True
     )
     pred = ids_to_caption(tokenizer, pred_ids[0].tolist())
+    last_word = ids_to_caption(tokenizer, [pred_ids[0, -1].item()])
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 5))
     axes[0].imshow(denormalize(image_tensor))
@@ -76,23 +101,23 @@ def visualize_sample(
     axes[0].axis("off")
 
     if attn is not None:
-        # attn: (B, tgt_len, src_len) or (B*heads, ...)
-        w = attn[0]
-        if w.dim() == 3:
-            w = w[-1]  # last decoding step
-        if w.dim() == 2:
-            w = w[-1]
-        w = w.cpu().numpy()
-        if w.size == 49:
-            heat = w.reshape(7, 7)
-        else:
-            heat = w[:49].reshape(7, 7) if w.size >= 49 else np.ones((7, 7)) / 49
-        heat = (heat - heat.min()) / (heat.max() - heat.min() + 1e-8)
+        heat = attention_to_heatmap(attn, grid_size=7, out_size=img_size)
         axes[1].imshow(denormalize(image_tensor))
-        axes[1].imshow(heat, cmap="jet", alpha=0.5, interpolation="bilinear")
-        axes[1].set_title("Cross-attention (last step)")
+        axes[1].imshow(heat, cmap="jet", alpha=0.55, interpolation="bilinear")
+        axes[1].set_title(f"Cross-attention when generating: '{last_word}'")
     else:
-        axes[1].text(0.5, 0.5, "No attention captured", ha="center")
+        axes[1].imshow(denormalize(image_tensor))
+        axes[1].text(
+            0.5,
+            0.5,
+            "No attention captured",
+            ha="center",
+            va="center",
+            transform=axes[1].transAxes,
+            color="white",
+            fontsize=12,
+            bbox=dict(boxstyle="round", facecolor="black", alpha=0.6),
+        )
     axes[1].axis("off")
 
     fig.tight_layout()

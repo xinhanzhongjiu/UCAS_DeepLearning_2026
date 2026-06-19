@@ -122,7 +122,63 @@ class CNNTransformerCaptioner(nn.Module):
         self.decoder = nn.TransformerDecoder(dec_layer, num_layers=num_decoder_layers)
         self.output = nn.Linear(d_model, vocab_size)
 
-        self._last_cross_attn: List[torch.Tensor] = []
+    def _embed_tgt(self, ys: torch.Tensor) -> torch.Tensor:
+        tgt_emb = self.token_emb(ys) * math.sqrt(self.d_model)
+        tgt_emb = tgt_emb.transpose(0, 1)
+        tgt_emb = self.text_pos(tgt_emb)
+        return tgt_emb.transpose(0, 1)
+
+    def _run_decoder_with_cross_attention(
+        self,
+        tgt_emb: torch.Tensor,
+        memory: torch.Tensor,
+        tgt_mask: torch.Tensor,
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Run decoder; on the last layer return cross-attention weights (B, tgt_len, src_len)."""
+        x = tgt_emb
+        cross_attn: Optional[torch.Tensor] = None
+        layers = self.decoder.layers
+
+        for i, layer in enumerate(layers):
+            if i < len(layers) - 1:
+                x = layer(x, memory, tgt_mask=tgt_mask)
+                continue
+
+            if layer.norm_first:
+                sa = layer.self_attn(
+                    layer.norm1(x),
+                    layer.norm1(x),
+                    layer.norm1(x),
+                    attn_mask=tgt_mask,
+                    need_weights=False,
+                )[0]
+                x = x + layer.dropout1(sa)
+                cross_out, cross_attn = layer.multihead_attn(
+                    layer.norm2(x),
+                    memory,
+                    memory,
+                    need_weights=True,
+                    average_attn_weights=True,
+                )
+                x = x + layer.dropout2(cross_out)
+                ff = layer.linear2(layer.dropout(layer.activation(layer.linear1(layer.norm3(x)))))
+                x = x + layer.dropout3(ff)
+            else:
+                sa = layer.self_attn(x, x, x, attn_mask=tgt_mask, need_weights=False)[0]
+                x = layer.norm1(x + layer.dropout1(sa))
+                cross_out, cross_attn = layer.multihead_attn(
+                    x,
+                    memory,
+                    memory,
+                    need_weights=True,
+                    average_attn_weights=True,
+                )
+                x = layer.norm2(x + layer.dropout2(cross_out))
+                ff = layer.linear2(layer.dropout(layer.activation(layer.linear1(x))))
+                x = layer.norm3(x + layer.dropout3(ff))
+
+        assert cross_attn is not None
+        return x, cross_attn
 
     def encode_image(self, images: torch.Tensor) -> torch.Tensor:
         feats = self.cnn(images)
@@ -131,27 +187,12 @@ class CNNTransformerCaptioner(nn.Module):
         memory = self.encoder(feats)  # (B, 49, d_model)
         return memory
 
-    def _register_attn_hooks(self) -> None:
-        self._last_cross_attn.clear()
-
-        def hook(module, _input, output):
-            # output of MultiheadAttention: (attn_output, attn_weights)
-            if isinstance(output, tuple) and len(output) > 1 and output[1] is not None:
-                self._last_cross_attn.append(output[1].detach())
-
-        for layer in self.decoder.layers:
-            layer.multihead_attn.register_forward_hook(hook)
-
     def forward(
         self,
         images: torch.Tensor,
         caption_ids: torch.Tensor,
         return_attention: bool = False,
     ) -> torch.Tensor:
-        if return_attention:
-            self._register_attn_hooks()
-            self._last_cross_attn.clear()
-
         memory = self.encode_image(images)
         # caption_ids: (B, L) — teacher forcing on ids[:, :-1]
         tgt = caption_ids[:, :-1]
@@ -186,10 +227,6 @@ class CNNTransformerCaptioner(nn.Module):
         max_len: int,
         return_attention: bool = False,
     ) -> Tuple[torch.Tensor, Optional[torch.Tensor]]:
-        if return_attention:
-            self._register_attn_hooks()
-            self._last_cross_attn.clear()
-
         memory = self.encode_image(images)
         b = images.size(0)
         device = images.device
@@ -208,8 +245,10 @@ class CNNTransformerCaptioner(nn.Module):
             ys = torch.cat([ys, next_token], dim=1)
 
         attn = None
-        if return_attention and self._last_cross_attn:
-            attn = self._last_cross_attn[-1]
+        if return_attention:
+            tgt_emb = self._embed_tgt(ys)
+            tgt_mask = self._generate_square_subsequent_mask(ys.size(1), device)
+            _, attn = self._run_decoder_with_cross_attention(tgt_emb, memory, tgt_mask)
         return ys, attn
 
     def beam_search_decode(

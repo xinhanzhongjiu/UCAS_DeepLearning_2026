@@ -20,7 +20,7 @@ pip install -r requirements.txt
 | `pycocoevalcap` | BLEU / CIDEr / ROUGE 等评测 |
 | `nltk` | 辅助评测（METEOR 需 Java，见下文） |
 
-**METEOR**：`pycocoevalcap` 的 METEOR 依赖本机安装 **Java**。未安装时其它指标仍正常，METEOR 为 `null` 并在结果 JSON 中记录原因。
+**METEOR**：依赖本机 **Java**。`evaluate.py` 采用 **分块调用** `meteor-1.5.jar`（`config.yaml` 中 `meteor_chunk_size`，默认 256），并对字幕做 `|||`/换行清洗，避免全量评测时协议错位。若仍失败，会自动回退到 **NLTK METEOR**。结果 JSON 中 `METEOR_backend` 字段标明所用后端。
 
 **分词器离线**：若无法访问 HuggingFace，首次训练会自动根据 COCO 字幕构建本地 `CaptionTokenizer`，保存到 `checkpoints/tokenizer/`。
 
@@ -215,6 +215,7 @@ python test.py all --max-images 500 --epochs 2
 |------|------|
 | `beam_size` | Beam search 宽度（1 等价贪心） |
 | `decode_max_len` | 生成最大长度 |
+| `meteor_chunk_size` | METEOR 每批图像数（过大易协议错位，过小略慢） |
 
 ---
 
