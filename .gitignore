@@ -1,0 +1,13 @@
+weights/
+datasets/
+
+__pycache__/
+checkpoints/
+data/
+!exp5/yolov5/data/
+
+runs/
+exp5/yolov5_backup/
+.DS_Store
+
+*.pyc

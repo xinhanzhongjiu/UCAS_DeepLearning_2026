@@ -1,0 +1,73 @@
+{
+  "split": "val",
+  "checkpoint": "/root/code/DL/UCAS_DeepLearning_2026/exp8/checkpoints/best.pt",
+  "model_type": "transformer",
+  "num_samples": 11828,
+  "metrics": {
+    "Bleu_1": 0.659872959610426,
+    "Bleu_2": 0.4829716521740572,
+    "Bleu_3": 0.34635139297660233,
+    "Bleu_4": 0.2496451925290514,
+    "ROUGE_L": 0.4514669636286544,
+    "CIDEr": 0.7576687638353815,
+    "METEOR": 0.2653536912717721,
+    "METEOR_backend": "pycocoevalcap"
+  },
+  "examples": [
+    {
+      "image_id": 33820,
+      "prediction": "a bus that is sitting on the side of a road",
+      "references": [
+        "A white bus driving under a traffic light next to a park.",
+        "A stop light that has a bus underneath it.",
+        "a city bus stops at a bus stop",
+        "A large white bus on the side of the road.",
+        "a bus shelter with some people waiting for the bus"
+      ]
+    },
+    {
+      "image_id": 87058,
+      "prediction": "a large blue and white airplane on a runway",
+      "references": [
+        "The airplane is boarded and ready to take off",
+        "A large blue plane sits on the runway at an airport.",
+        "a blue plane is sitting on a runway",
+        "A large jetliner sitting on top of an airport tarmac.",
+        "Blue airplane sitting on a runway with two worker trucks in the background."
+      ]
+    },
+    {
+      "image_id": 459255,
+      "prediction": "a young man is doing a trick on a skateboard",
+      "references": [
+        "A man jumping up into the air while holding a tennis racquet.",
+        "THER IS A BOY JUMPING HIGH WITH THE DOG IN THE YARD",
+        "A dog and a boy playing outside during the day",
+        "A man jumps in the air while holding a tennis racket on the side of a road while a dog stands next to him.",
+        "A boy is doing a jump with his skateboard and his dog looks on."
+      ]
+    },
+    {
+      "image_id": 373964,
+      "prediction": "a little boy that is on a skateboard",
+      "references": [
+        "A young man riding a skateboard on top of a cement slab.",
+        "Small child wearing green helmet on top of a skateboard.",
+        "A young boy stands and balances on a skateboard.",
+        "a young child riding a skate board",
+        "A boy is riding a skateboard and wearing a helmet."
+      ]
+    },
+    {
+      "image_id": 418500,
+      "prediction": "a man and a woman are sitting on a bench",
+      "references": [
+        "a man sits next to a monument on a bench",
+        "A man is sitting on a bench next a statue of man with dog licking his face.",
+        "a person next to a statue of a person with a dog",
+        "two people sitting on a porch swing, one holding a dog",
+        "A man sitting on a bench with a statue of a man with dog licking his face."
+      ]
+    }
+  ]
+}
